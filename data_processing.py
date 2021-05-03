@@ -167,7 +167,7 @@ def separate_stanzas_from_dataframe(data, n = 400):
             new_lyrics.append(stanza)
             new_labels.append(genre)
 
-    separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics}).reindex_like(data)
+    separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics})
 
     return separated_data
 
