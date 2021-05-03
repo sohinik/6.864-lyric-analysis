@@ -24,21 +24,29 @@ def load_model(model, filepath):
     model.load_state_dict(torch.load(filepath))
     return model
 
-def dataframe_to_dict(df):
-    '''
-    Inputs: 
-    df: a pandas DataFrame created in data_processing.py
 
-    Outputs:
-    data_dict:
-        {
-            "labels": [...], # the correct genres in order
-            "lyrics": [...], # the correct lyrics in order
-        }
-    '''
-
-    return {
-        "labels": df["Genre"].tolist(),
-        "lyrics": df["Lyrics"].tolist(),
-    }
     
+# import transformers
+# from multiprocessing import Pool
+# from tqdm import tqdm, trange
+
+# tokenizer = transformers.AutoTokenizer.from_pretrained('distilbert-base-cased')
+
+# def proc_line_init(tokenizer_for_data):
+#     global tokenizer
+#     tokenizer = tokenizer_for_data
+
+# def proc_line(sentence):
+
+#     sentence_ids = tokenizer.encode(sentence, verbose=False)
+#     return sentence_ids
+
+# def preproc(data, threads, tokenizer):
+
+#     with Pool(threads, initializer=proc_line_init, initargs=(tokenizer,)) as p:
+#         data_ids = list(tqdm(p.imap(proc_line, data), total=len(data)))
+    
+#     return data_ids
+
+# train_ids = preproc(train_dict["lyrics"], 16, tokenizer)
+# test_ids =  preproc(test_dict["lyrics"], 16, tokenizer)

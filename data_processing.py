@@ -114,7 +114,57 @@ def split_data(data, training_ratio = 0.8):
 
     return train_data, test_data
 
-def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1890):
+def dataframe_to_dict(df):
+    '''
+    Inputs: 
+    df: a pandas DataFrame created in data_processing.py
+
+    Outputs:
+    data_dict:
+        {
+            "labels": [...], # the correct genres in order
+            "lyrics": [...], # the correct lyrics in order
+        }
+    '''
+
+    return {
+        "labels": df["Genre"].tolist(),
+        "lyrics": df["Lyrics"].tolist(),
+    }
+
+def separate_stanzas(data_dict, n = 4):
+    '''
+    Splits lyrics up into datapoints that contain n lines at a time
+    
+    Inputs:
+    data_dict:
+        {
+            "labels": [...], # the correct genres in order
+            "lyrics": [...], # the correct lyrics in order
+        }
+    n: the number of lines per new datapoint
+
+    Outputs:
+    data_dict: the updated dictionary
+        {
+            "labels": [...], # the correct genres in order
+            "lyrics": [...], # the correct lyrics in order
+        }
+    '''
+    new_lyrics = []
+    new_labels = []
+    for lyric, label in zip(data_dict["lyrics"], data_dict["labels"]):
+        lines = lyric.split("\n")
+        for i in range(0, len(lines), n):
+            new_lyrics.append(lines[i: i + n])
+            new_labels.append(label)
+    
+    return {
+        "labels": new_labels,
+        "lyrics": new_lyrics,
+    }
+
+def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1890, num_lines_per_stanza = 4):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -125,14 +175,20 @@ def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=
     num_included (optional): number of each genre included. default is 1890
 
     Outputs:
-    train_data: a pandas DataFrame containing the training_data
-    test_data: a pandas DataFrame containing the testing_data
+    train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
+    test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
     data = load_raw_data(filename)
     data = clean_data(data, clean_genre, genres, num_included)
     train_data, test_data = split_data(data)
 
-    return train_data, test_data
+    train_dict = dataframe_to_dict(train_data)
+    test_dict = dataframe_to_dict(test_data)
+
+    train_dict = separate_stanzas(train_dict, num_lines_per_stanza)
+    test_dict = separate_stanzas(test_dict, num_lines_per_stanza)
+
+    return train_dict, test_dict
 
 def save_data(data, filename):
     '''
