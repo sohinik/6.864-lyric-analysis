@@ -38,7 +38,7 @@ def dataframe_to_dict(df):
     '''
 
     return {
-        "labels": df["Genres"].tolist(),
+        "labels": df["Genre"].tolist(),
         "lyrics": df["Lyrics"].tolist(),
     }
     
