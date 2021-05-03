@@ -164,8 +164,10 @@ def separate_stanzas_from_dataframe(data, n = 400):
         for i in range(0, len(words), n):
             stanza = " ".join(words[i: i + n])
             
-            new_lyrics.append(stanza)
-            new_labels.append(genre)
+            # Filter out guitar tabs
+            if "----" not in stanza:
+                new_lyrics.append(stanza)
+                new_labels.append(genre)
 
     separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics})
 
