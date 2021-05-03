@@ -202,7 +202,41 @@ def get_data(filename = "data.csv", clean_genre=True,
     if clean_genre: 
         train_data = filter_genres(train_data, genres, num_included)
         test_data = filter_genres(test_data, genres, num_included)
+
+    train_dict = dataframe_to_dict(train_data)
+    test_dict = dataframe_to_dict(test_data)
+
+    return train_dict, test_dict
+
+def get_data_old(filename = "data.csv", clean_genre=True, 
+             genres=None, num_included=None, 
+             num_words_per_stanza = 400, training_ratio = 0.8):
+    '''
+    Old version of get_data that had songs split across train + test set
+
+    Input:
+    filename: path to the .csv file name stored as a string
+    clean_genre (optional): a boolean that is True if genres should be dropped
+                            and the genre distribution should be uniform, and
+                            is False otherwise
+    genres (optional): list of accepted genres. default is None
+    num_included (optional): number of each genre included. default is None
+    num_words_per_stanza: the number of lines per new datapoint. Default is 4.
+    training_ratio (optional): the proportion of data used for training, 
+                               rest of data is for testing. Default is 0.8
+
+    Outputs:
+    train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
+    test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
+    '''
+    raw_data = load_raw_data(filename)
+    cleaned_data = clean_data(raw_data)
+    cleaned_data = separate_stanzas_from_dataframe(cleaned_data, num_words_per_stanza)
+
+    if clean_genre: 
+        cleaned_data = filter_genres(cleaned_data, genres, num_included)
     
+    train_data, test_data = split_data(cleaned_data, genres, training_ratio)
 
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
