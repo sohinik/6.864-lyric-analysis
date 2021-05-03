@@ -100,7 +100,11 @@ def split_data(data, genres = None, training_ratio = 0.8):
     test_data: a pandas DataFrame containing the testing_data
     
     '''
+    if genres is None:
+        genres = ["Rock", "Metal", "Hip-Hop", "Country", "Folk"]
+    
     train_data, test_data = None, None 
+    
     for genre in genres:
         genre_data = data[data["Genre"] == genre]
         num_datapoints = len(genre_data.index)
