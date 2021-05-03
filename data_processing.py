@@ -137,45 +137,13 @@ def dataframe_to_dict(df):
         "lyrics": df["Lyrics"].tolist(),
     }
 
-def separate_stanzas_from_dict(data_dict, n = 4):
+def separate_stanzas_from_dataframe(data, n = 400):
     '''
-    Splits lyrics up into datapoints that contain n lines at a time
-    
-    Inputs:
-    data_dict:
-        {
-            "labels": [...], # the correct genres in order
-            "lyrics": [...], # the correct lyrics in order
-        }
-    n: the number of lines per new datapoint
-
-    Outputs:
-    data_dict: the updated dictionary
-        {
-            "labels": [...], # the correct genres in order
-            "lyrics": [...], # the correct lyrics in order
-        }
-    '''
-    new_lyrics = []
-    new_labels = []
-    for lyric, label in zip(data_dict["lyrics"], data_dict["labels"]):
-        lines = lyric.split("\n")
-        for i in range(0, len(lines), n):
-            new_lyrics.append( "\n ".join(lines[i: i + n]))
-            new_labels.append(label)
-    
-    return {
-        "labels": new_labels,
-        "lyrics": new_lyrics,
-    }
-
-def separate_stanzas_from_dataframe(data, n = 4):
-    '''
-    Splits lyrics up into datapoints that contain n lines at a time
+    Splits lyrics up into datapoints that contain n words at a time
     
     Inputs:
     data: pandas DataFrame containing the data
-    n (optional): the number of lines per new datapoint. default is 4
+    n (optional): the number of words per new datapoint. default is 400
 
     Outputs:
     separated_data: pandas DataFrame with separated stanzas
@@ -188,9 +156,9 @@ def separate_stanzas_from_dataframe(data, n = 4):
         genre = row["Genre"]
         lyrics = row["Lyrics"]
 
-        lines = lyrics.split("\n")
-        for i in range(0, len(lines), n):
-            stanza = "\n ".join(lines[i: i + n])
+        words = lyrics.split()
+        for i in range(0, len(words), n):
+            stanza = " ".join(words[i: i + n])
             
             new_lyrics.append(stanza)
             new_labels.append(genre)
@@ -201,7 +169,7 @@ def separate_stanzas_from_dataframe(data, n = 4):
 
 def get_data(filename = "data.csv", clean_genre=True, 
              genres=None, num_included=None, 
-             num_lines_per_stanza = 4, training_ratio = 0.5):
+             num_words_per_stanza = 400, training_ratio = 0.8):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -210,7 +178,7 @@ def get_data(filename = "data.csv", clean_genre=True,
                             is False otherwise
     genres (optional): list of accepted genres. default is None
     num_included (optional): number of each genre included. default is None
-    num_lines_per_stanza: the number of lines per new datapoint. Default is 4.
+    num_words_per_stanza: the number of lines per new datapoint. Default is 4.
     training_ratio (optional): the proportion of data used for training, 
                                rest of data is for testing. Default is 0.8
 
@@ -220,7 +188,7 @@ def get_data(filename = "data.csv", clean_genre=True,
     '''
     raw_data = load_raw_data(filename)
     cleaned_data = clean_data(raw_data)
-    stanza_data = separate_stanzas_from_dataframe(cleaned_data, num_lines_per_stanza)
+    stanza_data = separate_stanzas_from_dataframe(cleaned_data, num_words_per_stanza)
 
     if clean_genre: cleaned_data = filter_genres(stanza_data, genres, num_included)
     train_data, test_data = split_data(cleaned_data, genres, training_ratio)

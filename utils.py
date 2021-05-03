@@ -50,3 +50,35 @@ def load_model(model, filepath):
 
 # train_ids = preproc(train_dict["lyrics"], 16, tokenizer)
 # test_ids =  preproc(test_dict["lyrics"], 16, tokenizer)
+
+# def 
+#     '''
+#     Splits lyrics up into datapoints that contain n lines at a time
+    
+#     Inputs:
+#     data_dict:
+#         {
+#             "labels": [...], # the correct genres in order
+#             "lyrics": [...], # the correct lyrics in order
+#         }
+#     n: the number of lines per new datapoint
+
+#     Outputs:
+#     data_dict: the updated dictionary
+#         {
+#             "labels": [...], # the correct genres in order
+#             "lyrics": [...], # the correct lyrics in order
+#         }
+#     '''
+#     new_lyrics = []
+#     new_labels = []
+#     for lyric, label in zip(data_dict["lyrics"], data_dict["labels"]):
+#         lines = lyric.split("\n")
+#         for i in range(0, len(lines), n):
+#             new_lyrics.append( "\n ".join(lines[i: i + n]))
+#             new_labels.append(label)
+    
+#     return {
+#         "labels": new_labels,
+#         "lyrics": new_lyrics,
+#     }
