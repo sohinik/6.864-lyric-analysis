@@ -79,7 +79,7 @@ def genre_cleaner(data, genres=None, num_included=1900):
 
     for genre in genres:
         sampled_genre_data = data[data["Genre"] == genre].sample(n = num_included)
-        if cleaned_genre_data:
+        if cleaned_genre_data is None:
             cleaned_genre_data = sampled_genre_data
         else:
             cleaned_genre_data = cleaned_genre_data.append(sampled_genre_data)
