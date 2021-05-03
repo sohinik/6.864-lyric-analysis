@@ -105,7 +105,7 @@ def split_data(data, training_ratio = 0.8):
     indices = np.arange(num_datapoints)
     np.random.shuffle(indices)
 
-    num_training = training_ratio * num_datapoints
+    num_training = int(training_ratio * num_datapoints)
     training_indices = indices[ :num_training]
     testing_indices = indices[num_training: ]
 
