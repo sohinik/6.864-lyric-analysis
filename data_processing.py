@@ -12,13 +12,26 @@ def load_raw_data(filename):
     
     return pd.read_csv(filename)
 
-def clean_data(data, clean_genre=True):
+def clean_data(data, clean_genre=True, genres=None, num_included=1900):
     '''
     Input:
     data: a pandas DataFrame storing the data in 'train.csv
-    clean_genre: a boolean that is True if genres should be dropped
-                 and the genre distribution should be uniform, and
-                 is False otherwise
+    clean_genre (optional): a boolean that is True if genres should be dropped
+                            and the genre distribution should be uniform, and
+                            is False otherwise
+    genres (optional): list of accepted genres. default is ["Rock", "Metal", "Hip-Hop", 
+                        "Country", "Folk"]. can include:
+                        - Rock
+                        - Pop            
+                        - Metal      
+                        - Jazz        
+                        - Folk      
+                        - Indie      
+                        - R&B  
+                        - Hip-Hop
+                        - Electronic
+                        - Country
+    num_included (optional): number of each genre included. default is 1900
 
     Output:
     cleaned_train_data: a cleaned version of train_data (see README.md
@@ -34,11 +47,11 @@ def clean_data(data, clean_genre=True):
     cleaned_data = cleaned_data[cleaned_data["Genre"] != ""]
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
-    if clean_genre: cleaned_data = genre_cleaner(cleaned_data)
+    if clean_genre: cleaned_data = genre_cleaner(cleaned_data, num_included)
 
     return cleaned_data
 
-def genre_cleaner(data, genres=None, num_included=110000):
+def genre_cleaner(data, genres=None, num_included=1900):
     '''
     Input:
     data: Pandas Dataframe representing the data
@@ -54,7 +67,7 @@ def genre_cleaner(data, genres=None, num_included=110000):
                         - Hip-Hop
                         - Electronic
                         - Country
-    num_included (optional): number of each genre included. default is 110000
+    num_included (optional): number of each genre included. default is 1900
 
     Output:
     cleaned_genre_data: cleaned version of data with max num_included points of the given genres
@@ -101,10 +114,26 @@ def split_data(data, training_ratio = 0.8):
 
     return train_data, test_data
 
-def get_data(filename = "data.csv"):
+def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1900):
     '''
     Input:
     filename: path to the .csv file name stored as a string
+    clean_genre (optional): a boolean that is True if genres should be dropped
+                            and the genre distribution should be uniform, and
+                            is False otherwise
+    genres (optional): list of accepted genres. default is ["Rock", "Metal", "Hip-Hop", 
+                        "Country", "Folk"]. can include:
+                        - Rock
+                        - Pop            
+                        - Metal      
+                        - Jazz        
+                        - Folk      
+                        - Indie      
+                        - R&B  
+                        - Hip-Hop
+                        - Electronic
+                        - Country
+    num_included (optional): number of each genre included. default is 1900
 
     Outputs:
     train_data: a pandas DataFrame containing the training_data
