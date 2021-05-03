@@ -156,7 +156,7 @@ def separate_stanzas(data_dict, n = 4):
     for lyric, label in zip(data_dict["lyrics"], data_dict["labels"]):
         lines = lyric.split("\n")
         for i in range(0, len(lines), n):
-            new_lyrics.append(lines[i: i + n])
+            new_lyrics.append( "\n ".join(lines[i: i + n]))
             new_labels.append(label)
     
     return {
