@@ -183,8 +183,8 @@ def separate_stanzas_from_dataframe(data, n = 4):
     separated_data = pd.DataFrame().reindex_like(data)
 
     for i, row in data.iterrows():
-        genre = row["Genre"].item()
-        lyrics = row["Lyrics"].item()
+        genre = row["Genre"]
+        lyrics = row["Lyrics"]
 
         lines = lyrics.split("\n")
         for i in range(0, len(lines), n):
