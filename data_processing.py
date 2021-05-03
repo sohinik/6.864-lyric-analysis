@@ -12,26 +12,10 @@ def load_raw_data(filename):
     
     return pd.read_csv(filename)
 
-def clean_data(data, clean_genre=True, genres=None, num_included=1890):
+def clean_data(data):
     '''
     Input:
     data: a pandas DataFrame storing the data in 'train.csv
-    clean_genre (optional): a boolean that is True if genres should be dropped
-                            and the genre distribution should be uniform, and
-                            is False otherwise
-    genres (optional): list of accepted genres. default is ["Rock", "Metal", "Hip-Hop", 
-                        "Country", "Folk"]. can include:
-                        - Rock
-                        - Pop            
-                        - Metal      
-                        - Jazz        
-                        - Folk      
-                        - Indie      
-                        - R&B  
-                        - Hip-Hop
-                        - Electronic
-                        - Country
-    num_included (optional): number of each genre included. default is 1890
 
     Output:
     cleaned_train_data: a cleaned version of train_data (see README.md
@@ -47,11 +31,9 @@ def clean_data(data, clean_genre=True, genres=None, num_included=1890):
     cleaned_data = cleaned_data[cleaned_data["Genre"] != ""]
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
-    if clean_genre: cleaned_data = genre_cleaner(cleaned_data, genres, num_included)
-
     return cleaned_data
 
-def genre_cleaner(data, genres=None, num_included=1890):
+def filter_genres(data, genres=None, num_included=None):
     '''
     Input:
     data: Pandas Dataframe representing the data
@@ -67,13 +49,17 @@ def genre_cleaner(data, genres=None, num_included=1890):
                         - Hip-Hop
                         - Electronic
                         - Country
-    num_included (optional): number of each genre included. default is 1890
+    num_included (optional): number of each genre included. default is the minimum
+                             number of datapoints in each genre
 
     Output:
     cleaned_genre_data: cleaned version of data with max num_included points of the given genres
     '''
-    if not genres:
+    if genres is None:
         genres = ["Rock", "Metal", "Hip-Hop", "Country", "Folk"]
+
+    if num_included is None:
+        num_included = data[data["Genre"].isin(genres)]["Genre"].value_counts().min()
 
     cleaned_genre_data = None
 
@@ -86,13 +72,26 @@ def genre_cleaner(data, genres=None, num_included=1890):
     
     return cleaned_genre_data
 
-def split_data(data, training_ratio = 0.8):
+def split_data(data, genres = None, training_ratio = 0.8):
     '''
     Randomly splits all of the data into either the training
-    or testing data set
+    or testing data set such that the training and testing set
+    still have an equal number of datapoints between genres
 
     Input:
     data: a pandas DataFrame containing all of the data
+    genres (optional): list of accepted genres. default is ["Rock", "Metal", "Hip-Hop", 
+                        "Country", "Folk"]. can include:
+                        - Rock
+                        - Pop            
+                        - Metal      
+                        - Jazz        
+                        - Folk      
+                        - Indie      
+                        - R&B  
+                        - Hip-Hop
+                        - Electronic
+                        - Country
     training_ratio (optional): the proportion of data used for training, 
                                rest of data is for testing. Default is 0.8
 
@@ -101,16 +100,22 @@ def split_data(data, training_ratio = 0.8):
     test_data: a pandas DataFrame containing the testing_data
     
     '''
-    num_datapoints = len(data.index)
-    indices = np.arange(num_datapoints)
-    np.random.shuffle(indices)
+    train_data, test_data = None, None 
+    for genre in genres:
+        genre_data = data[data["Genre"] == genre]
+        num_datapoints = len(genre_data.index)
+        indices = np.arange(num_datapoints)
+        np.random.shuffle(indices)
 
-    num_training = int(training_ratio * num_datapoints)
-    training_indices = indices[ :num_training]
-    testing_indices = indices[num_training: ]
+        num_training = int(training_ratio * num_datapoints)
+        training_indices = indices[ :num_training]
+        testing_indices = indices[num_training: ]
 
-    train_data = data.iloc[training_indices]
-    test_data = data.iloc[testing_indices]
+        genre_train_data = genre_data.iloc[training_indices]
+        genre_test_data = genre_data.iloc[testing_indices]
+
+        train_data = pd.concat((train_data, genre_train_data)) if train_data is not None else genre_train_data
+        test_data = pd.concat((test_data, genre_test_data)) if test_data is not None else genre_test_data
 
     return train_data, test_data
 
@@ -132,7 +137,7 @@ def dataframe_to_dict(df):
         "lyrics": df["Lyrics"].tolist(),
     }
 
-def separate_stanzas(data_dict, n = 4):
+def separate_stanzas_from_dict(data_dict, n = 4):
     '''
     Splits lyrics up into datapoints that contain n lines at a time
     
@@ -164,7 +169,35 @@ def separate_stanzas(data_dict, n = 4):
         "lyrics": new_lyrics,
     }
 
-def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1890, num_lines_per_stanza = 4):
+def separate_stanzas_from_dataframe(data, n = 4):
+    '''
+    Splits lyrics up into datapoints that contain n lines at a time
+    
+    Inputs:
+    data: pandas DataFrame containing the data
+    n (optional): the number of lines per new datapoint. default is 4
+
+    Outputs:
+    separated_data: pandas DataFrame with separated stanzas
+    '''
+    separated_data = pd.DataFrame().reindex_like(data)
+
+    for i, row in data.iterrows():
+        genre = row["Genre"].item()
+        lyrics = row["Lyrics"].item()
+
+        lines = lyrics.split("\n")
+        for i in range(0, len(lines), n):
+            stanza = "\n ".join(lines[i: i + n])
+            stanza_df = pd.DataFrame({"Genre": genre, "Lyrics": stanza}).reindex_like(data)
+
+            separated_data.append(stanza_df)
+
+    return separated_data
+
+def get_data(filename = "data.csv", clean_genre=True, 
+             genres=None, num_included=None, 
+             num_lines_per_stanza = 4, training_ratio = 0.5):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -172,21 +205,24 @@ def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=
                             and the genre distribution should be uniform, and
                             is False otherwise
     genres (optional): list of accepted genres. default is None
-    num_included (optional): number of each genre included. default is 1890
+    num_included (optional): number of each genre included. default is None
+    num_lines_per_stanza: the number of lines per new datapoint. Default is 4.
+    training_ratio (optional): the proportion of data used for training, 
+                               rest of data is for testing. Default is 0.8
 
     Outputs:
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
-    data = load_raw_data(filename)
-    data = clean_data(data, clean_genre, genres, num_included)
-    train_data, test_data = split_data(data)
+    raw_data = load_raw_data(filename)
+    cleaned_data = clean_data(raw_data)
+    stanza_data = separate_stanzas_from_dataframe(cleaned_data, num_lines_per_stanza)
+
+    if clean_genre: cleaned_data = filter_genres(stanza_data, genres, num_included)
+    train_data, test_data = split_data(cleaned_data, genres, training_ratio)
 
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
-
-    train_dict = separate_stanzas(train_dict, num_lines_per_stanza)
-    test_dict = separate_stanzas(test_dict, num_lines_per_stanza)
 
     return train_dict, test_dict
 
