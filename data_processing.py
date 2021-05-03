@@ -180,7 +180,9 @@ def separate_stanzas_from_dataframe(data, n = 4):
     Outputs:
     separated_data: pandas DataFrame with separated stanzas
     '''
-    separated_data = pd.DataFrame().reindex_like(data)
+
+    new_lyrics = []
+    new_labels = []
 
     for i, row in data.iterrows():
         genre = row["Genre"]
@@ -189,9 +191,11 @@ def separate_stanzas_from_dataframe(data, n = 4):
         lines = lyrics.split("\n")
         for i in range(0, len(lines), n):
             stanza = "\n ".join(lines[i: i + n])
-            stanza_df = pd.DataFrame({"Genre": genre, "Lyrics": stanza}).reindex_like(data)
+            
+=           new_lyrics.append(stanza)
+            new_labels.append(genre)
 
-            separated_data.append(stanza_df)
+    separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics}).reindex_like(data)
 
     return separated_data
 
