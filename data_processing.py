@@ -127,6 +127,7 @@ def save_data(data, filename):
     data.to_csv(filename)
 
 if __name__ == "__main__":
+    # train_data, test_data = get_data()
     pass
 
     

@@ -23,3 +23,22 @@ def load_model(model, filepath):
     '''
     model.load_state_dict(torch.load(filepath))
     return model
+
+def dataframe_to_dict(df):
+    '''
+    Inputs: 
+    df: a pandas DataFrame created in data_processing.py
+
+    Outputs:
+    data_dict:
+        {
+            "labels": [...], # the correct genres in order
+            "lyrics": [...], # the correct lyrics in order
+        }
+    '''
+
+    return {
+        "labels": df["Labels"].tolist(),
+        "lyrics": df["Lyrics"].tolist(),
+    }
+    
