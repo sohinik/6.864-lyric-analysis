@@ -12,7 +12,7 @@ def load_raw_data(filename):
     
     return pd.read_csv(filename)
 
-def clean_data(data, clean_genre=True, genres=None, num_included=1900):
+def clean_data(data, clean_genre=True, genres=None, num_included=1890):
     '''
     Input:
     data: a pandas DataFrame storing the data in 'train.csv
@@ -31,7 +31,7 @@ def clean_data(data, clean_genre=True, genres=None, num_included=1900):
                         - Hip-Hop
                         - Electronic
                         - Country
-    num_included (optional): number of each genre included. default is 1900
+    num_included (optional): number of each genre included. default is 1890
 
     Output:
     cleaned_train_data: a cleaned version of train_data (see README.md
@@ -51,7 +51,7 @@ def clean_data(data, clean_genre=True, genres=None, num_included=1900):
 
     return cleaned_data
 
-def genre_cleaner(data, genres=None, num_included=1900):
+def genre_cleaner(data, genres=None, num_included=1890):
     '''
     Input:
     data: Pandas Dataframe representing the data
@@ -67,7 +67,7 @@ def genre_cleaner(data, genres=None, num_included=1900):
                         - Hip-Hop
                         - Electronic
                         - Country
-    num_included (optional): number of each genre included. default is 1900
+    num_included (optional): number of each genre included. default is 1890
 
     Output:
     cleaned_genre_data: cleaned version of data with max num_included points of the given genres
@@ -114,7 +114,7 @@ def split_data(data, training_ratio = 0.8):
 
     return train_data, test_data
 
-def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1900):
+def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=1890):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -122,7 +122,7 @@ def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=
                             and the genre distribution should be uniform, and
                             is False otherwise
     genres (optional): list of accepted genres. default is None
-    num_included (optional): number of each genre included. default is 1900
+    num_included (optional): number of each genre included. default is 1890
 
     Outputs:
     train_data: a pandas DataFrame containing the training_data
