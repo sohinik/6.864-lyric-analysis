@@ -194,10 +194,15 @@ def get_data(filename = "data.csv", clean_genre=True,
     '''
     raw_data = load_raw_data(filename)
     cleaned_data = clean_data(raw_data)
-    stanza_data = separate_stanzas_from_dataframe(cleaned_data, num_words_per_stanza)
-
-    if clean_genre: cleaned_data = filter_genres(stanza_data, genres, num_included)
     train_data, test_data = split_data(cleaned_data, genres, training_ratio)
+
+    train_data = separate_stanzas_from_dataframe(train_data, num_words_per_stanza)
+    test_data = separate_stanzas_from_dataframe(test_data, num_words_per_stanza)
+
+    if clean_genre: 
+        train_data = filter_genres(train_data, genres, num_included)
+        test_data = filter_genres(test_data, genres, num_included)
+    
 
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
