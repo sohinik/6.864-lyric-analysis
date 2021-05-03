@@ -47,7 +47,7 @@ def clean_data(data, clean_genre=True, genres=None, num_included=1900):
     cleaned_data = cleaned_data[cleaned_data["Genre"] != ""]
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
-    if clean_genre: cleaned_data = genre_cleaner(cleaned_data, num_included)
+    if clean_genre: cleaned_data = genre_cleaner(cleaned_data, genres, num_included)
 
     return cleaned_data
 
@@ -121,18 +121,7 @@ def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=
     clean_genre (optional): a boolean that is True if genres should be dropped
                             and the genre distribution should be uniform, and
                             is False otherwise
-    genres (optional): list of accepted genres. default is ["Rock", "Metal", "Hip-Hop", 
-                        "Country", "Folk"]. can include:
-                        - Rock
-                        - Pop            
-                        - Metal      
-                        - Jazz        
-                        - Folk      
-                        - Indie      
-                        - R&B  
-                        - Hip-Hop
-                        - Electronic
-                        - Country
+    genres (optional): list of accepted genres. default is None
     num_included (optional): number of each genre included. default is 1900
 
     Outputs:
@@ -140,7 +129,7 @@ def get_data(filename = "data.csv", clean_genre=True, genres=None, num_included=
     test_data: a pandas DataFrame containing the testing_data
     '''
     data = load_raw_data(filename)
-    data = clean_data(data)
+    data = clean_data(data, clean_genre, genres, num_included)
     train_data, test_data = split_data(data)
 
     return train_data, test_data
