@@ -1,4 +1,7 @@
+import numpy as np
 import re
+import string
+import random
 
 class Tokenizer:
   def __init__(self, min_occur=10):
