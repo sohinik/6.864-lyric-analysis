@@ -1,3 +1,5 @@
+import re
+
 class Tokenizer:
   def __init__(self, min_occur=10):
     self.word_to_token = {}
