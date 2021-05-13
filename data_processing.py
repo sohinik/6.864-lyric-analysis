@@ -252,7 +252,7 @@ def get_information(data, lyrics):
     data: raw data
     lyrics: lyrics of the song we are searching for
     '''
-    return data.loc[[lyrics in c for c in list(data['Lyrics'])]]
+    return data.loc[[lyrics in str(c) for c in list(data['Lyrics'])]]
 
 def save_data(data, filename):
     '''
