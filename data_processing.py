@@ -189,6 +189,7 @@ def get_data(filename = "data.csv", clean_genre=True,
                                rest of data is for testing. Default is 0.8
 
     Outputs:
+    raw_data: the raw pandas dataframe with all data
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
@@ -206,7 +207,7 @@ def get_data(filename = "data.csv", clean_genre=True,
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
 
-    return train_dict, test_dict
+    return raw_data, train_dict, test_dict
 
 def get_data_old(filename = "data.csv", clean_genre=True, 
              genres=None, num_included=None, 
@@ -226,7 +227,6 @@ def get_data_old(filename = "data.csv", clean_genre=True,
                                rest of data is for testing. Default is 0.8
 
     Outputs:
-    raw_data: the raw pandas dataframe with all data
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
@@ -242,7 +242,7 @@ def get_data_old(filename = "data.csv", clean_genre=True,
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
 
-    return raw_data, train_dict, test_dict
+    return train_dict, test_dict
 
 def get_information(data, lyrics):
     '''
