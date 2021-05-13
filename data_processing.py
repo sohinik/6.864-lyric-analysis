@@ -175,7 +175,8 @@ def separate_stanzas_from_dataframe(data, n = 400):
 
 def get_data(filename = "data.csv", clean_genre=True, 
              genres=None, num_included=None, 
-             num_words_per_stanza = 400, training_ratio = 0.8):
+             num_words_per_stanza = 400, training_ratio = 0.8,
+             seed = 0):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -187,6 +188,7 @@ def get_data(filename = "data.csv", clean_genre=True,
     num_words_per_stanza: the number of lines per new datapoint. Default is 4.
     training_ratio (optional): the proportion of data used for training, 
                                rest of data is for testing. Default is 0.8
+    seed (optional): the random seed used. default is 0.
 
     Outputs:
     raw_data: the raw pandas dataframe with all data
@@ -230,6 +232,9 @@ def get_data_old(filename = "data.csv", clean_genre=True,
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
+    random.seed(seed)
+    np.random.seed(seed)
+
     raw_data = load_raw_data(filename)
     cleaned_data = clean_data(raw_data)
     cleaned_data = separate_stanzas_from_dataframe(cleaned_data, num_words_per_stanza)
