@@ -241,7 +241,17 @@ def get_data_old(filename = "data.csv", clean_genre=True,
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
 
-    return train_dict, test_dict
+    return raw_data, train_dict, test_dict
+
+def get_information(data, lyrics):
+    '''
+    Gets information from data given the lyrics of a song (we assume that these are unique)
+
+    Input:
+    data: raw data
+    lyrics: lyrics of the song we are searching for
+    '''
+    return data[lyrics in data["Lyrics"]]
 
 def save_data(data, filename):
     '''
