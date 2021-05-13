@@ -226,6 +226,7 @@ def get_data_old(filename = "data.csv", clean_genre=True,
                                rest of data is for testing. Default is 0.8
 
     Outputs:
+    raw_data: the raw pandas dataframe with all data
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
