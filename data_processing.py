@@ -33,6 +33,8 @@ def clean_data(data):
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
     # Remove datapoints with bad lyrics
+    print(cleaned_data['Lyrics'])
+
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("---")]
     cleaned_data = cleaned_data.loc[~cleaned_data.str.contains("___")] 
     cleaned_data = cleaned_data.loc[~cleaned_data.str.contains("|"))]
