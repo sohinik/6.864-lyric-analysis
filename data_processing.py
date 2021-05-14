@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import random
 
 def load_raw_data(filename):
     '''
