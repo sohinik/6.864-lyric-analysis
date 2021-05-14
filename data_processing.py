@@ -154,6 +154,9 @@ def separate_stanzas_from_dataframe(data, n = 400):
     separated_data: pandas DataFrame with separated stanzas
     '''
 
+    if n is None:
+        return data
+
     new_lyrics = []
     new_labels = []
 
