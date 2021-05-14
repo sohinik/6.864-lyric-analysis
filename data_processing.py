@@ -25,7 +25,7 @@ def clean_data(data):
     # Keep only English songs
     cleaned_data = data[data["Language"] == "en"]
 
-    print(type(cleaned_data["Language"]))
+    print(type(cleaned_data["Lyrics"]))
 
     # Keep only the genre and the lyrics
     cleaned_data = cleaned_data[["Genre", "Lyrics"]]
@@ -35,7 +35,6 @@ def clean_data(data):
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
     # Remove datapoints with bad lyrics
-    cleaned_data.columns=headerName
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("---", na=False)]
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("___", na=False)] 
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("|", na=False)]
