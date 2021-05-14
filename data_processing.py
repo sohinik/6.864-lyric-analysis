@@ -37,6 +37,8 @@ def clean_data(data):
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("___", na=False)] 
     cleaned_data = cleaned_data.loc[~cleaned_data["Lyrics"].str.contains("|", na=False)]
 
+    print(cleaned_data)
+
     return cleaned_data
 
 def filter_genres(data, genres=None, num_included=None):
