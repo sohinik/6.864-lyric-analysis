@@ -33,7 +33,7 @@ def clean_data(data):
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
     # Remove datapoints with bad lyrics
-    cleaned_data = cleaned_data[not cleaned_data["Lyrics"].str.contains("---") or not cleaned_data.str.contains("___") or not cleaned_data.str.contains("|")]
+    cleaned_data = cleaned_data.loc[not(cleaned_data["Lyrics"].str.contains("---") or cleaned_data.str.contains("___") or cleaned_data.str.contains("|"))]
 
     return cleaned_data
 
@@ -224,7 +224,7 @@ def get_information(data, lyrics):
     data: raw data
     lyrics: lyrics of the song we are searching for
     '''
-    return data[data['Lyrics'].str.contains(lyrics)]
+    return data.loc[data['Lyrics'].str.contains(lyrics)]
 
 def save_data(data, filename):
     '''
