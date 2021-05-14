@@ -25,8 +25,6 @@ def clean_data(data):
     # Keep only English songs
     cleaned_data = data[data["Language"] == "en"]
 
-    print(type(cleaned_data["Lyrics"]))
-
     # Keep only the genre and the lyrics
     cleaned_data = cleaned_data[["Genre", "Lyrics"]]
 
@@ -72,6 +70,7 @@ def filter_genres(data, genres=None, num_included=None):
     cleaned_genre_data = None
 
     for genre in genres:
+        print(num_included)
         sampled_genre_data = data[data["Genre"] == genre].sample(n = num_included)
         if cleaned_genre_data is None:
             cleaned_genre_data = sampled_genre_data
