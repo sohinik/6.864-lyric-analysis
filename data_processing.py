@@ -32,6 +32,9 @@ def clean_data(data):
     cleaned_data = cleaned_data[cleaned_data["Genre"] != ""]
     cleaned_data = cleaned_data[cleaned_data["Lyrics"] != ""]
 
+    # Remove datapoints with bad lyrics
+    cleaned_data = cleaned_data[not cleaned_data.contains("---") or not cleaned_data.contains("___") or not cleaned_data.contains("|")]
+
     return cleaned_data
 
 def filter_genres(data, genres=None, num_included=None):
@@ -167,11 +170,6 @@ def separate_stanzas_from_dataframe(data, n = 400):
         words = lyrics.split()
         for i in range(0, len(words), n):
             stanza = " ".join(words[i: i + n])
-            
-            # Filter out guitar tabs
-            if "----" not in stanza:
-                new_lyrics.append(stanza)
-                new_labels.append(genre)
 
     separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics})
 
