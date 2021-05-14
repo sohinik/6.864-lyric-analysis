@@ -25,6 +25,8 @@ def clean_data(data):
     # Keep only English songs
     cleaned_data = data[data["Language"] == "en"]
 
+    print(type(cleaned_data["Language"]))
+
     # Keep only the genre and the lyrics
     cleaned_data = cleaned_data[["Genre", "Lyrics"]]
 
