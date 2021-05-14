@@ -195,6 +195,9 @@ def get_data(filename = "data.csv", clean_genre=True,
     train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
     '''
+    random.seed(seed)
+    np.random.seed(seed)
+
     raw_data = load_raw_data(filename)
     cleaned_data = clean_data(raw_data)
     train_data, test_data = split_data(cleaned_data, genres, training_ratio)
@@ -211,44 +214,6 @@ def get_data(filename = "data.csv", clean_genre=True,
 
     return raw_data, train_dict, test_dict
 
-def get_data_old(filename = "data.csv", clean_genre=True, 
-             genres=None, num_included=None, 
-             num_words_per_stanza = 400, training_ratio = 0.8):
-    '''
-    Old version of get_data that had songs split across train + test set
-
-    Input:
-    filename: path to the .csv file name stored as a string
-    clean_genre (optional): a boolean that is True if genres should be dropped
-                            and the genre distribution should be uniform, and
-                            is False otherwise
-    genres (optional): list of accepted genres. default is None
-    num_included (optional): number of each genre included. default is None
-    num_words_per_stanza: the number of lines per new datapoint. Default is 4.
-    training_ratio (optional): the proportion of data used for training, 
-                               rest of data is for testing. Default is 0.8
-
-    Outputs:
-    train_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
-    test_dict: a dictionary with keys {"lyrics": [...], "labels": [...]}
-    '''
-    random.seed(seed)
-    np.random.seed(seed)
-
-    raw_data = load_raw_data(filename)
-    cleaned_data = clean_data(raw_data)
-    cleaned_data = separate_stanzas_from_dataframe(cleaned_data, num_words_per_stanza)
-
-    if clean_genre: 
-        cleaned_data = filter_genres(cleaned_data, genres, num_included)
-    
-    train_data, test_data = split_data(cleaned_data, genres, training_ratio)
-
-    train_dict = dataframe_to_dict(train_data)
-    test_dict = dataframe_to_dict(test_data)
-
-    return train_dict, test_dict
-
 def get_information(data, lyrics):
     '''
     Gets information from data given the lyrics of a song (we assume that these are unique)
@@ -257,7 +222,7 @@ def get_information(data, lyrics):
     data: raw data
     lyrics: lyrics of the song we are searching for
     '''
-    return data.loc[[lyrics in str(c) for c in list(data['Lyrics'])]]
+    return data[data['Lyrics'].contains(lyrics)]
 
 def save_data(data, filename):
     '''
