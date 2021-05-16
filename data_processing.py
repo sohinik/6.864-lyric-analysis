@@ -69,7 +69,6 @@ def filter_genres(data, genres=None, num_included=None):
     cleaned_genre_data = None
 
     for genre in genres:
-        print(num_included)
         sampled_genre_data = data[data["Genre"] == genre].sample(n = num_included)
         if cleaned_genre_data is None:
             cleaned_genre_data = sampled_genre_data
@@ -169,7 +168,7 @@ def separate_stanzas_from_dataframe(data, n = 400):
         genre = row["Genre"]
         lyrics = row["Lyrics"]
 
-        words = lyrics.split()
+        words = lyrics.split(" ")
         for i in range(0, len(words), n):
             stanza = " ".join(words[i: i + n])
 
