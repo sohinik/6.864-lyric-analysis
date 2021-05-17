@@ -64,7 +64,7 @@ def filter_genres(data, genres=None, num_included=None):
         genres = ["Rock", "Metal", "Hip-Hop", "Country", "Folk"]
 
     if num_included is None:
-        num_included = data[data["Genre"].isin(genres)]["Genre"].value_counts().min()
+        num_included = int(data[data["Genre"].isin(genres)]["Genre"].value_counts().min())
 
     cleaned_genre_data = None
 
