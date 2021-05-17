@@ -173,7 +173,7 @@ def separate_stanzas_from_dataframe(data, n = 400):
             stanza = " ".join(words[i: i + n])
             
             new_lyrics.append(stanza)
-            new_lyrics.append(genre)
+            new_labels.append(genre)
 
     separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics})
 
