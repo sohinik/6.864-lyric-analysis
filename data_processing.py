@@ -171,6 +171,9 @@ def separate_stanzas_from_dataframe(data, n = 400):
         words = lyrics.split()
         for i in range(0, len(words), n):
             stanza = " ".join(words[i: i + n])
+            
+            new_lyrics.append(stanza)
+            new_lyrics.append(genre)
 
     separated_data = pd.DataFrame({"Genre": new_labels, "Lyrics": new_lyrics})
 
