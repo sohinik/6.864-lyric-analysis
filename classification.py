@@ -175,3 +175,62 @@ def evaluate(model, inputs, labels, num_labels = 6, batch_size = 16, device = "c
 
   avg_test_loss = total_loss / num_batches
   return avg_test_loss, confusion_matrix
+
+def selective_evaluate(model, inputs, labels, num_labels = 6, batch_size = 16, device = "cuda"):
+  """
+  Inputs:
+  model: an instance of GenreClassificationModel
+  inputs: a list of strings where each string is a lyric
+  labels: a list of strings where each string is the correct genre
+  num_labels: the total number of labels (leave as default for pretrained model)
+  device: the runtime device
+
+  Outputs:
+  avg_test_loss: the average test loss over all batches
+  confusion_matrix: the confusion matrix
+  """
+  tokenizer = transformers.AutoTokenizer.from_pretrained('distilbert-base-cased')
+  labels = get_ids_for_labels(labels)
+
+  model.eval()
+
+  num_data = len(labels)
+  batch_size = 16 # batch_size is entire
+  num_batches = 0
+
+  total_loss = 0
+  confusion_matrix = torch.zeros((num_labels, num_labels)).to(device)
+
+  for i in range(0, num_data, batch_size):
+      batch_inputs = inputs[i: i + batch_size]
+      batch_labels = labels[i: i + batch_size]
+
+      batch_ids, batch_labels, batch_attn_mask = vectorize_batch(batch_inputs, batch_labels, tokenizer)
+
+      with torch.no_grad():
+        outputs = model(
+            batch_ids,
+            batch_attn_mask,
+            batch_labels
+        )
+
+      # Back-propagate the loss signal and clip the gradients
+      total_loss += outputs.loss.mean()
+
+      # Update confusion matrix
+      logits = outputs.logits
+
+      # mask out irrelvant indices
+      indices_to_keep = [3, 4]
+      for i in range(6):
+        if i not in indices_to_keep:
+          logits[: ,i] -= float("inf")
+          
+      predictions = torch.argmax(logits, dim = 1)
+      for _, label, pred in zip(batch_inputs, batch_labels, predictions):
+        confusion_matrix[label, pred] += 1
+
+      num_batches += 1
+
+  avg_test_loss = total_loss / num_batches
+  return avg_test_loss, confusion_matrix
