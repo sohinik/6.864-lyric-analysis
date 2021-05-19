@@ -182,7 +182,7 @@ def separate_stanzas_from_dataframe(data, n = 400):
 def get_data(filename = "data.csv", clean_genre=True, 
              genres=None, num_included=None, 
              num_words_per_stanza = 400, training_ratio = 0.8,
-             seed = 0):
+             seed = 0, return_raw_data=True):
     '''
     Input:
     filename: path to the .csv file name stored as a string
@@ -217,8 +217,9 @@ def get_data(filename = "data.csv", clean_genre=True,
 
     train_dict = dataframe_to_dict(train_data)
     test_dict = dataframe_to_dict(test_data)
-
-    return raw_data, train_dict, test_dict
+    if return_raw_data:
+        return raw_data, train_dict, test_dict
+    return train_dict, test_dict
 
 def get_information(data, lyrics):
     '''
