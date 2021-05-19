@@ -24,61 +24,11 @@ def load_model(model, filepath):
     model.load_state_dict(torch.load(filepath))
     return model
 
+def get_descriptive_stats(data):
+  labels = data["labels"]
 
-    
-# import transformers
-# from multiprocessing import Pool
-# from tqdm import tqdm, trange
+  freq_count = { x: labels.count(x) for x in set(labels)}
 
-# tokenizer = transformers.AutoTokenizer.from_pretrained('distilbert-base-cased')
+  print("Number of datapoints:", len(labels))
+  print("Frequency counts:", freq_count)
 
-# def proc_line_init(tokenizer_for_data):
-#     global tokenizer
-#     tokenizer = tokenizer_for_data
-
-# def proc_line(sentence):
-
-#     sentence_ids = tokenizer.encode(sentence, verbose=False)
-#     return sentence_ids
-
-# def preproc(data, threads, tokenizer):
-
-#     with Pool(threads, initializer=proc_line_init, initargs=(tokenizer,)) as p:
-#         data_ids = list(tqdm(p.imap(proc_line, data), total=len(data)))
-    
-#     return data_ids
-
-# train_ids = preproc(train_dict["lyrics"], 16, tokenizer)
-# test_ids =  preproc(test_dict["lyrics"], 16, tokenizer)
-
-# def 
-#     '''
-#     Splits lyrics up into datapoints that contain n lines at a time
-    
-#     Inputs:
-#     data_dict:
-#         {
-#             "labels": [...], # the correct genres in order
-#             "lyrics": [...], # the correct lyrics in order
-#         }
-#     n: the number of lines per new datapoint
-
-#     Outputs:
-#     data_dict: the updated dictionary
-#         {
-#             "labels": [...], # the correct genres in order
-#             "lyrics": [...], # the correct lyrics in order
-#         }
-#     '''
-#     new_lyrics = []
-#     new_labels = []
-#     for lyric, label in zip(data_dict["lyrics"], data_dict["labels"]):
-#         lines = lyric.split("\n")
-#         for i in range(0, len(lines), n):
-#             new_lyrics.append( "\n ".join(lines[i: i + n]))
-#             new_labels.append(label)
-    
-#     return {
-#         "labels": new_labels,
-#         "lyrics": new_lyrics,
-#     }
