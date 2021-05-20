@@ -12,14 +12,23 @@ https://www.kaggle.com/mateibejan/multilingual-lyrics-for-genre-classification
 After data cleaning, we have the following genre distribution
 
 Rock          107145
+
 Pop            86298
+
 Metal          19133
+
 Jazz           13314
+
 Folk            8169
+
 Indie           7240
+
 R&B             2765
+
 Hip-Hop         2238
+
 Electronic      2005
+
 Country         1890
 
 We'll focus mainly on 
